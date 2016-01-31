@@ -16,22 +16,22 @@ import java.io.Reader;
 import java.nio.CharBuffer;
 
 public class CharBufferTest {
-	public static void main(String[] args) {
-		try {
-			Reader rd = new BufferedReader(new InputStreamReader(new FileInputStream("/Users/mike/NetBeansProjects/jgrep/resources/shortTest.txt")));
-		    CharBuffer chbuff = CharBuffer.allocate(8);
-		    while(rd.read(chbuff) > 0){
-		    	chbuff.flip();
-		        while(chbuff.hasRemaining()){
-		        	char ch =  chbuff.get();
-		        	System.out.print(ch);
-		        }
-		        chbuff.clear();
-		    }
-		    rd.close();
+    public static void main(String[] args) {
+        try {
+            Reader rd = new BufferedReader(new InputStreamReader(new FileInputStream("/Users/mike/NetBeansProjects/jgrep/resources/shortTest.txt")));
+            CharBuffer chbuff = CharBuffer.allocate(8);
+            while(rd.read(chbuff) > 0){
+	    	chbuff.flip();
+	        while(chbuff.hasRemaining()){
+                    char ch =  chbuff.get();
+                    System.out.print(ch);
+                }
+                chbuff.clear();
+            }
+            rd.close();
 		    
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	} catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }    

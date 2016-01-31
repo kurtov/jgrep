@@ -26,7 +26,7 @@ public class Main {
     public static void main(String[] args) {
         int length;
         String substr = null;
-        Path[] paths = null;
+        
         
         if(args.length < 2) {
             System.out.println("Неверные параметры. jgrep SUBSTR FILE[...]");
