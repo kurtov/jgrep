@@ -31,45 +31,69 @@
 package ru.kurtov.jmh;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import ru.kurtov.jgrep.Grep;
+import ru.kurtov.jgrep.JGrep;
+import ru.kurtov.jgrep.JGrepCharBuffer;
 
-public class JMHSample_01_HelloWorld {
-
-    /*
-     * This is our first benchmark method.
-     *
-     * JMH works as follows: users annotate the methods with @Benchmark, and
-     * then JMH produces the generated code to run this particular benchmark as
-     * reliably as possible. In general one might think about @Benchmark methods
-     * as the benchmark "payload", the things we want to measure. The
-     * surrounding infrastructure is provided by the harness itself.
-     *
-     * Read the Javadoc for @Benchmark annotation for complete semantics and
-     * restrictions. At this point we only note that the methods names are
-     * non-essential, and it only matters that the methods are marked with
-     * @Benchmark. You can have multiple benchmark methods within the same
-     * class.
-     *
-     * Note: if the benchmark method never finishes, then JMH run never finishes
-     * as well. If you throw an exception from the method body the JMH run ends
-     * abruptly for this benchmark and JMH will run the next benchmark down the
-     * list.
-     *
-     * Although this benchmark measures "nothing" it is a good showcase for the
-     * overheads the infrastructure bear on the code you measure in the method.
-     * There are no magical infrastructures which incur no overhead, and it is
-     * important to know what are the infra overheads you are dealing with. You
-     * might find this thought unfolded in future examples by having the
-     * "baseline" measurements to compare against.
-     */
+@State(Scope.Thread)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+public class JMHSeriesOfSmallFiles {
+    
+    File[] files;
+    String pattern;
+    
+    @Setup
+    public void setUp(){
+        files = new File[10];
+        for(int i=0; i<10; i++) {
+            files[i] = new File("/Users/mike/NetBeansProjects/jgrep/resources/Latin-Lipsum-" + i + ".txt");
+        }
+        
+        pattern = "delicatissimi";
+    }
+	    
 
     @Benchmark
-    public void wellHelloThere() {
+    public void kmpSearcherJGrepCharBuffer() throws IOException {
+
+        JGrep grep = new JGrepCharBuffer(pattern, JGrep.KMP_SEARCHER);
+        for (File f : files) {
+            grep.find(f);
+        }
+    }
+
+    @Benchmark
+    public void simpleSearcherJGrepCharBuffer() throws IOException {
         // this method was intentionally left blank.
+        
+        JGrep grep = new JGrepCharBuffer(pattern, JGrep.SIMPLE_SEARCHER);
+        for (File f : files) {
+            grep.find(f);
+        }
+    }
+
+    @Benchmark
+    public void Grep() throws IOException {
+        Grep.compile(pattern);
+        
+        for (File f : files) {
+            Grep.grep(f);
+        }
     }
 
     /*
@@ -95,10 +119,12 @@ public class JMHSample_01_HelloWorld {
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(JMHSample_01_HelloWorld.class.getSimpleName())
+                .include(JMHSeriesOfSmallFiles.class.getSimpleName())
                 .forks(1)
+                .warmupIterations(5)
+                .measurementIterations(10)
                 .build();
-
+        
         new Runner(opt).run();
     }
 
