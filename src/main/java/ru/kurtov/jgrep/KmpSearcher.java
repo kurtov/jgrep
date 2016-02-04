@@ -1,17 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ru.kurtov.jgrep;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/**
- *
- * @author mike
- */
 public class KmpSearcher implements Searcher {
     private final int[] prefixFunction;
     private final char[] pattern;
@@ -38,8 +29,7 @@ public class KmpSearcher implements Searcher {
             if(buffer[i] == '\n') {
                 array = buildArray(buffer, start, i);
                 start = i + 1;
-                
-                //str = new String(workBuffer);
+
                 if(Kmp.contain(this.pattern, array, this.prefixFunction)) {
                     lines.add(new String(array));
                 }

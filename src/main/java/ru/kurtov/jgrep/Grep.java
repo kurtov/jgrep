@@ -65,7 +65,7 @@ public class Grep {
 
     // Compile the pattern from the command line
     //
-    private static void compile(String pat) {
+    public static void compile(String pat) {
 	try {
 	    pattern = Pattern.compile(pat);
 	} catch (PatternSyntaxException x) {
@@ -89,7 +89,7 @@ public class Grep {
 	    else
 		pm.reset(cs);
 	    if (pm.find())
-		System.out.print(f + ":" + lines + ":" + cs);
+;//		System.out.print(f + ":" + lines + ":" + cs);
 	    if (lm.end() == cb.limit())
 		break;
 	}
@@ -97,7 +97,7 @@ public class Grep {
 
     // Search for occurrences of the input pattern in the given file
     //
-    private static void grep(File f) throws IOException {
+    public static void grep(File f) throws IOException {
 
 	// Open the file and then get a channel from the stream
 	FileInputStream fis = new FileInputStream(f);

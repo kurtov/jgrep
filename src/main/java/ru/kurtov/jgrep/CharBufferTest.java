@@ -18,8 +18,8 @@ import java.nio.CharBuffer;
 public class CharBufferTest {
     public static void main(String[] args) {
         try {
-            Reader rd = new BufferedReader(new InputStreamReader(new FileInputStream("/Users/mike/NetBeansProjects/jgrep/resources/shortTest.txt")));
-            CharBuffer chbuff = CharBuffer.allocate(8);
+            Reader rd = new BufferedReader(new InputStreamReader(new FileInputStream("/Users/mike/NetBeansProjects/jgrep/resources/file.txt")));
+            CharBuffer chbuff = CharBuffer.allocate(4);
             while(rd.read(chbuff) > 0){
 	    	chbuff.flip();
 	        while(chbuff.hasRemaining()){
