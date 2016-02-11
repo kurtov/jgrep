@@ -1,4 +1,4 @@
-package ru.kurtov.jgrep;
+package ru.kurtov.jmh;
 
 /*
  * @(#)Grep.java	1.3 01/12/13

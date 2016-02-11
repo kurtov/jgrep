@@ -2,7 +2,7 @@ package ru.kurtov.jgrep.tests;
 
 import org.junit.Assert;
 import org.junit.Test;
-import ru.kurtov.jgrep.Kmp;
+import ru.kurtov.jgrep.searcher.Kmp;
 
 public class KMPUnitTest {
 

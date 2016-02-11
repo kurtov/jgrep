@@ -27,7 +27,6 @@ public class JGrepCharBuffer extends JGrep {
         int length;
 
         while((length = rd.read(chbuff)) > 0){
-            //searcher.search(chbuff.array()); //БАГА!!!!!! нельзя тут использовать array()
             chbuff.flip();
             array = new char[length];
             int i = 0;

@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.CharBuffer;
-import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -49,10 +48,9 @@ public class JGrepCharBufferMultiThred extends JGrep {
             
             
             try {
-                //System.out.print(new String(array));
                 queue.put(array);
-            } catch (InterruptedException ex) {
-                System.out.println("бага");
+            } catch (InterruptedException e) {
+                System.err.println(f + ": " + e);
             }
             
             chbuff.clear();
@@ -62,24 +60,8 @@ public class JGrepCharBufferMultiThred extends JGrep {
         
         try {
             queue.put(TERMINATOR);
-        } catch (InterruptedException ex) {
-            System.out.println("бага");
-        }
-        //System.out.print("<end>\n");
-/*
-        searcher.search(chbuff.array());
-        printResult(f, searcher.terminate());
-        searcher.reset();
- */
-    }
-    
-    private void printQueue() throws InterruptedException {
-        char[] array;
-        System.out.println("printQueue");
-        while((array = queue.take()) != null) {
-            System.out.println("res");
-            
-            System.out.println(Arrays.toString(array));
+        } catch (InterruptedException e) {
+            System.err.println(f + ": " + e);
         }
     }
     
@@ -93,18 +75,18 @@ public class JGrepCharBufferMultiThred extends JGrep {
             this.file = file;
         }
 
+        @Override
         public void run() {
             char[] array;
             
             try {
                 array = queue.take();
                 while(array != TERMINATOR) {
-                    //System.out.print(new String(array));
                     searcher.search(array);
                     array = queue.take();
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.err.println(file + ": " + e);
             }
             printResult(file, searcher.terminate());
             searcher.reset();

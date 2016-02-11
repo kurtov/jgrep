@@ -11,8 +11,8 @@ import java.nio.charset.CharsetDecoder;
 
 
 public class JGrepMappedByteBuffer extends JGrep {
-    private static Charset charset = Charset.forName("UTF-8"); //"ISO-8859-15"
-    private static CharsetDecoder decoder = charset.newDecoder();
+    private final static Charset charset = Charset.forName("UTF-8"); //"ISO-8859-15"
+    private final static CharsetDecoder decoder = charset.newDecoder();
 
     public JGrepMappedByteBuffer(String pattern) {
         super(pattern);

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ru.kurtov.jmh;
 
 import java.io.File;
@@ -20,7 +15,6 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
-import ru.kurtov.jgrep.Grep;
 import ru.kurtov.jgrep.JGrep;
 import ru.kurtov.jgrep.JGrepCharBuffer;
 import ru.kurtov.jgrep.JGrepCharBufferMultiThred;
@@ -37,7 +31,8 @@ public class JMHBigFile {
     
     @Setup
     public void setUp(){
-        file = new File("/Users/mike/NetBeansProjects/jgrep/resources/WarAndPeace.txt");
+        //file = new File("/Users/mike/NetBeansProjects/jgrep/resources/WarAndPeace.txt");
+        file = new File("resources/WarAndPeace.txt");
         pattern = "письмо";
     }
     

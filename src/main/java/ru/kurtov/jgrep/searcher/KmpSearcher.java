@@ -1,5 +1,6 @@
-package ru.kurtov.jgrep;
+package ru.kurtov.jgrep.searcher;
 
+import ru.kurtov.jgrep.searcher.Searcher;
 import java.util.ArrayList;
 import java.util.Arrays;
 

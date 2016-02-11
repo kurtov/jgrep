@@ -3,9 +3,9 @@ package ru.kurtov.jgrep.tests;
 import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Test;
-import ru.kurtov.jgrep.KmpSearcher;
-import ru.kurtov.jgrep.Searcher;
-import ru.kurtov.jgrep.SimpleSearcher;
+import ru.kurtov.jgrep.searcher.KmpSearcher;
+import ru.kurtov.jgrep.searcher.Searcher;
+import ru.kurtov.jgrep.searcher.SimpleSearcher;
 
 public class SearcherUnitTest {
     String[] buffer1 = new String[] {

@@ -1,4 +1,4 @@
-package ru.kurtov.jgrep;
+package ru.kurtov.jgrep.searcher;
 
 import java.util.Arrays;
 
