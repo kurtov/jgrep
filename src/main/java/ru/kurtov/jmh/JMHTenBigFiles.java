@@ -90,15 +90,6 @@ public class JMHTenBigFiles {
         initJgrep(grep);
         grep.find();
     }
-
-    @Benchmark
-    public void Grep() throws IOException {
-        Grep.compile(pattern);
-        
-        for(int i = 0; i<N; i++) {
-            Grep.grep(new File(file));
-        }
-    }
     
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()

@@ -76,12 +76,6 @@ public class JMHBigFile {
         grep.setSuppressOutput(true);
         grep.find(file);
     }
-
-    @Benchmark
-    public void Grep() throws IOException {
-        Grep.compile(pattern);
-        Grep.grep(file);
-    }
     
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
