@@ -24,68 +24,85 @@ import ru.kurtov.jgrep.JGrepMappedByteBuffer;
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class JMHBigFile {
+public class JMHTenSmallFiles {
     
-    File file;
+    String file;
     String pattern;
+    public static int N = 10;
     
     @Setup
     public void setUp(){
-        file = new File("resources/WarAndPeace.txt");
-        pattern = "письмо";
+        file = "resources/Latin-Lipsum-";
+        pattern = "delicatissimi";
+    }
+    
+    private void initJgrep(JGrep grep) {
+        for(int i = 0; i<N; i++) {
+            grep.addFileName(file+i+".txt");    
+        }
     }
     
     @Benchmark
     public void kmpSearcherCharBuffer() throws IOException {
         JGrep grep = new JGrepCharBuffer(pattern, JGrep.KMP_SEARCHER);
         grep.setSuppressOutput(true);
-        grep.find(file);
+        initJgrep(grep);
+        grep.find();
+
     }
 
     @Benchmark
     public void simpleSearcherJGrepCharBuffer() throws IOException {
         JGrep grep = new JGrepCharBuffer(pattern, JGrep.SIMPLE_SEARCHER);
         grep.setSuppressOutput(true);
-        grep.find(file);
+        initJgrep(grep);
+        grep.find();
     }
     
     @Benchmark
     public void kmpSearcherMappedByteBuffer() throws IOException {
         JGrep grep = new JGrepMappedByteBuffer(pattern, JGrep.KMP_SEARCHER);
         grep.setSuppressOutput(true);
-        grep.find(file);
+        initJgrep(grep);
+        grep.find();
     }
 
     @Benchmark
     public void simpleSearcherMappedByteBuffer() throws IOException {
         JGrep grep = new JGrepMappedByteBuffer(pattern, JGrep.SIMPLE_SEARCHER);
         grep.setSuppressOutput(true);
-        grep.find(file);
+        initJgrep(grep);
+        grep.find();
     }
     
     @Benchmark
     public void kmpSearcherCharBufferMultiThred() throws IOException {
         JGrep grep = new JGrepCharBufferMultiThred(pattern, JGrep.KMP_SEARCHER);
         grep.setSuppressOutput(true);
-        grep.find(file);
+        initJgrep(grep);
+        grep.find();
     }
     
     @Benchmark
     public void simpleSearcherCharBufferMultiThred() throws IOException {
         JGrep grep = new JGrepCharBufferMultiThred(pattern, JGrep.SIMPLE_SEARCHER);
         grep.setSuppressOutput(true);
-        grep.find(file);
+        initJgrep(grep);
+        grep.find();
     }
 
     @Benchmark
     public void Grep() throws IOException {
         Grep.compile(pattern);
-        Grep.grep(file);
+        
+        for(int i = 0; i<N; i++) {
+            Grep.grep(new File(file+i+".txt"));    
+        }
     }
     
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(JMHBigFile.class.getSimpleName())
+                .include(JMHTenSmallFiles.class.getSimpleName())
                 .forks(1)
                 .warmupIterations(10)
                 .warmupTime(TimeValue.milliseconds(10))
