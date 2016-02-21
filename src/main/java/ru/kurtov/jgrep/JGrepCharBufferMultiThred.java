@@ -41,7 +41,7 @@ public class JGrepCharBufferMultiThred extends JGrep {
                 }
                 
                 try (Reader rd = new BufferedReader(new InputStreamReader(new FileInputStream(f)))) {
-                    CharBuffer chbuff = CharBuffer.allocate(4056);
+                    CharBuffer chbuff = CharBuffer.allocate(BUFFER_SIZE);
                     char[] array;
                     int length;
 

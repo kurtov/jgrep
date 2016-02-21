@@ -11,6 +11,8 @@ abstract public class JGrep {
     protected String pattern;
     protected Searcher searcher;
     
+    public final static int BUFFER_SIZE = 4096;
+    
     //Подавлять вывод найденных строк
     //Установить в true при тестировании
     protected boolean suppressOutput = false;

@@ -25,7 +25,7 @@ public class JGrepCharBuffer extends JGrep {
             File f = new File(fileName);    
         
             Reader rd = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-            CharBuffer chbuff = CharBuffer.allocate(1024);
+            CharBuffer chbuff = CharBuffer.allocate(BUFFER_SIZE);
             char[] array;
             int length;
 
