@@ -20,27 +20,31 @@ public class JGrepCharBuffer extends JGrep {
     }
     
     @Override
-    public void find(File f) throws IOException {
-        Reader rd = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-        CharBuffer chbuff = CharBuffer.allocate(1024);
-        char[] array;
-        int length;
-
-        while((length = rd.read(chbuff)) > 0){
-            chbuff.flip();
-            array = new char[length];
-            int i = 0;
-            while(chbuff.hasRemaining()){
-                char ch = chbuff.get();
-                array[i++] = ch;
-            }
-            searcher.search(array);
-            
-            chbuff.clear();
-        }
-        rd.close();
+    public void find() throws IOException {
+        for(String fileName : this.fileNames) {
+            File f = new File(fileName);    
         
-        printResult(f, searcher.terminate());
-        searcher.reset();
+            Reader rd = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+            CharBuffer chbuff = CharBuffer.allocate(1024);
+            char[] array;
+            int length;
+
+            while((length = rd.read(chbuff)) > 0){
+                chbuff.flip();
+                array = new char[length];
+                int i = 0;
+                while(chbuff.hasRemaining()){
+                    char ch = chbuff.get();
+                    array[i++] = ch;
+                }
+                searcher.search(array);
+
+                chbuff.clear();
+            }
+            rd.close();
+
+            printResult(f, searcher.terminate());
+            searcher.reset();
+        }
     }
 }

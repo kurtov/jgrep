@@ -3,6 +3,7 @@ package ru.kurtov.jgrep;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -12,8 +13,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class JGrepCharBufferMultiThred extends JGrep {
-    private final BlockingQueue<char[]> queue;
+    private final BlockingQueue<QueueItem> queue;
     protected static final char[] TERMINATOR = new char[0];
+    
 
     public JGrepCharBufferMultiThred(String pattern) {
         super(pattern);
@@ -24,72 +26,77 @@ public class JGrepCharBufferMultiThred extends JGrep {
         super(pattern, SearcherType);
         queue = new LinkedBlockingQueue();
     }
-    
+
     @Override
-    public void find(File f) throws IOException {
-        Reader rd = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-        CharBuffer chbuff = CharBuffer.allocate(4056);
-        char[] array;
-        int length;
+    public void find() throws IOException {
+        new Thread(new Consumer(queue)).start();
         
-        new Thread(new Consumer(queue, f)).start();
-        
-        
-        
-        while((length = rd.read(chbuff)) > 0){
-            chbuff.flip();
-            
-            array = new char[length];
-            int i = 0;
-            while(chbuff.hasRemaining()){
-                char ch = chbuff.get();
-                array[i++] = ch;
+        try{
+            for(String fileName : this.fileNames) {
+                File f = new File(fileName);
+                
+                if(!f.exists()) {
+                    queue.put(QueueItem.getNotFoundItem(fileName));
+                    continue;
+                }
+                
+                try (Reader rd = new BufferedReader(new InputStreamReader(new FileInputStream(f)))) {
+                    CharBuffer chbuff = CharBuffer.allocate(4056);
+                    char[] array;
+                    int length;
+
+                    while((length = rd.read(chbuff)) > 0){
+                        chbuff.flip();
+
+                        array = new char[length];
+                        int i = 0;
+                        while(chbuff.hasRemaining()){
+                            char ch = chbuff.get();
+                            array[i++] = ch;
+                        }
+
+                        queue.put(QueueItem.getDataItem(fileName, array));
+
+                        chbuff.clear();
+                    }
+                    queue.put(QueueItem.getEOFItem(fileName));
+                }
             }
-            
-            
-            try {
-                queue.put(array);
-            } catch (InterruptedException e) {
-                System.err.println(f + ": " + e);
-            }
-            
-            chbuff.clear();
-        }
-        rd.close();
-        
-        
-        try {
-            queue.put(TERMINATOR);
+
+            queue.put(QueueItem.getTerminatorItem());
         } catch (InterruptedException e) {
-            System.err.println(f + ": " + e);
+            System.err.println(e);
         }
     }
     
     public class Consumer implements Runnable{
+        
+  
+        protected BlockingQueue<QueueItem> queue;
 
-        protected BlockingQueue<char[]> queue = null;
-        protected File file = null;
-
-        public Consumer(BlockingQueue<char[]> queue, File file) {
+        public Consumer(BlockingQueue<QueueItem> queue) {
             this.queue = queue;
-            this.file = file;
         }
 
         @Override
-        public void run() {
-            char[] array;
-            
+        public void run(){
             try {
-                array = queue.take();
-                while(array != TERMINATOR) {
-                    searcher.search(array);
-                    array = queue.take();
+                QueueItem item = queue.take();
+                while(!item.isTerminator()) {
+                    if(item.isData()) {
+                        searcher.search(item.getData());
+                    } else if(item.isEOF()) {
+                        printResult(item.getFileName(), searcher.terminate());
+                        searcher.reset();
+                    } else if(item.isNotFound()) {
+                        System.err.println(item.getFileName() + ": файл не найден");
+                    }
+                    
+                    item = queue.take();
                 }
             } catch (InterruptedException e) {
-                System.err.println(file + ": " + e);
+                System.err.println(e);
             }
-            printResult(file, searcher.terminate());
-            searcher.reset();
         }
     }
 }

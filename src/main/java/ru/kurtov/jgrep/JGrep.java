@@ -15,6 +15,8 @@ abstract public class JGrep {
     //Установить в true при тестировании
     protected boolean suppressOutput = false;
     
+    ArrayList<String> fileNames = new ArrayList();
+    
     //Реализация двух алгоритмов поиска подстроки в строке
     public final static int KMP_SEARCHER = 0;
     public final static int SIMPLE_SEARCHER = 1;
@@ -37,13 +39,26 @@ abstract public class JGrep {
         }
     }    
     
-    public abstract void find(File file) throws IOException;
+    public void find(File f) throws IOException {
+        this.addFileName(f.getPath());
+        this.find();
+    }
+    
+    public abstract void find() throws IOException;
+    
+    public void addFileName(String fileName) {
+        fileNames.add(fileName);
+    }
 
     public void setSuppressOutput(boolean suppressOutput) {
         this.suppressOutput = suppressOutput;
     }
     
     protected void printResult(File f, ArrayList<String> result) {
+        printResult(f.getPath(), result);
+    }
+    
+    protected void printResult(String f, ArrayList<String> result) {
         if(suppressOutput) {
             return;
         }

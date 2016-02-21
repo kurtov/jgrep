@@ -23,26 +23,29 @@ public class JGrepMappedByteBuffer extends JGrep {
     }
     
     @Override
-    public void find(File f) throws IOException {
+    public void find() throws IOException {
+        for(String fileName : this.fileNames) {
+            File f = new File(fileName); 
 
-	// Open the file and then get a channel from the stream
-	FileInputStream fis = new FileInputStream(f);
-	FileChannel fc = fis.getChannel();
+            // Open the file and then get a channel from the stream
+            FileInputStream fis = new FileInputStream(f);
+            FileChannel fc = fis.getChannel();
 
-	// Get the file's size and then map it into memory
-	int sz = (int)fc.size();
-	MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, sz);
+            // Get the file's size and then map it into memory
+            int sz = (int)fc.size();
+            MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, sz);
 
-	// Decode the file into a char buffer
-	CharBuffer cb = decoder.decode(bb);
+            // Decode the file into a char buffer
+            CharBuffer cb = decoder.decode(bb);
 
-	// Perform the search
-	
-        searcher.search(cb.array());
-	// Close the channel and the stream
-	fc.close();
-        
-        printResult(f, searcher.terminate());
-        searcher.reset();
+            // Perform the search
+
+            searcher.search(cb.array());
+            // Close the channel and the stream
+            fc.close();
+
+            printResult(f, searcher.terminate());
+            searcher.reset();
+        }
     }
 }

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) { 
+    public static void main(String[] args) throws IOException { 
         int length = args.length;
         
         if(length < 2) {
@@ -15,12 +15,8 @@ public class Main {
         JGrep grep = new JGrepCharBufferMultiThred(args[0]);
 
         for (int i = 1; i < length; i++) {
-            File f = new File(args[i]);
-            try {
-                grep.find(f);
-            } catch (IOException x) {
-                System.err.println(f + ": " + x);
-            }
+            grep.addFileName(args[i]);
         }
+        grep.find();
     }
 }
